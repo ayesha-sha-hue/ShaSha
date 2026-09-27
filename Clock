@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dubai Clock</title>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        display: grid;
+        place-items: center;
+        height: 100vh;
+        background: transparent;
+      }
+      .card {
+        padding: 14px 18px;
+        border-radius: 14px;
+        background: rgba(20, 40, 80, 0.18);
+        border: 1px solid rgba(40, 120, 255, 0.25);
+        backdrop-filter: blur(10px);
+        min-width: 220px;
+        text-align: center;
+      }
+      .label { font-size: 12px; letter-spacing: 0.12em; opacity: 0.75; }
+      .time { font-size: 34px; font-weight: 700; margin-top: 6px; }
+      .date { font-size: 13px; opacity: 0.8; margin-top: 6px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="label">DUBAI (GST)</div>
+      <div id="time" class="time">--:--:--</div>
+      <div id="date" class="date"></div>
+    </div>
+
+    <script>
+      const TZ = "Asia/Dubai";
+
+      function pad2(n) { return String(n).padStart(2, "0"); }
+
+      function tick() {
+        const now = new Date();
+
+        const parts = new Intl.DateTimeFormat("en-GB", {
+          timeZone: TZ,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false
+        }).formatToParts(now);
+
+        const hh = parts.find(p => p.type === "hour").value;
+        const mm = parts.find(p => p.type === "minute").value;
+        const ss = parts.find(p => p.type === "second").value;
+
+        document.getElementById("time").textContent = `${hh}:${mm}:${ss}`;
+
+        const dateStr = new Intl.DateTimeFormat("en-GB", {
+          timeZone: TZ,
+          weekday: "short",
+          year: "numeric",
+          month: "short",
+          day: "2-digit"
+        }).format(now);
+
+        document.getElementById("date").textContent = dateStr;
+      }
+
+      tick();
+      setInterval(tick, 250);
+    </script>
+  </body>
+</html>
